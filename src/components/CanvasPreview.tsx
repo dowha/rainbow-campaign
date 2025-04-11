@@ -6,7 +6,12 @@ type Props = {
   position: 'top-left' | 'top-right' | 'bottom-right'
 }
 
-export default function CanvasPreview({ image, overlay, position, setPosition }: Props & { setPosition?: (pos: Props['position']) => void }) {
+export default function CanvasPreview({
+  image,
+  overlay,
+  position,
+  setPosition,
+}: Props & { setPosition?: (pos: Props['position']) => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
 
@@ -70,26 +75,23 @@ export default function CanvasPreview({ image, overlay, position, setPosition }:
         style={{ width: 320, height: 320 }}
       />
       {setPosition && (
-        <div className="flex justify-center gap-3 mb-4">
+        <div className="flex justify-center gap-2 mb-4">
           {[
             { label: '왼쪽 위', value: 'top-left' },
             { label: '오른쪽 위', value: 'top-right' },
             { label: '오른쪽 아래', value: 'bottom-right' },
           ].map((opt) => (
-            <label
+            <span
               key={opt.value}
-              className="text-sm flex items-center gap-2 px-3 py-1 border border-gray-300 rounded-full cursor-pointer hover:bg-gray-100 transition"
+              onClick={() => setPosition?.(opt.value as Props['position'])}
+              className={`text-sm px-4 py-1 w-28 text-center rounded-full cursor-pointer transition select-none ${
+                position === opt.value
+                  ? 'bg-blue-100 text-blue-700 font-semibold'
+                  : 'bg-gray-100 text-gray-600'
+              }`}
             >
-              <input
-                type="radio"
-                name="overlayPosition"
-                value={opt.value}
-                checked={position === opt.value}
-                onChange={() => setPosition(opt.value as Props['position'])}
-                className="accent-blue-500"
-              />
               {opt.label}
-            </label>
+            </span>
           ))}
         </div>
       )}
