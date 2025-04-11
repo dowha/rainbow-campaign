@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 
-export default function MessageForm() {
+type Props = {
+  overlay: string
+}
+
+export default function MessageForm({ overlay }: Props) {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -14,6 +18,7 @@ export default function MessageForm() {
     const form = new URLSearchParams()
     form.append('email', email)
     form.append('message', message)
+    form.append('overlay', overlay)
 
     try {
       const res = await fetch(import.meta.env.VITE_GAS_URL, {

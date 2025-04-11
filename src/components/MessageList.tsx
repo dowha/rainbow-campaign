@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 type Message = {
   email: string
   message: string
+  overlay?: string
   timestamp: string
 }
 
@@ -25,8 +26,8 @@ export default function MessageList() {
             className="bg-white p-4 rounded shadow-sm border border-gray-200"
           >
             <p className="font-medium text-gray-800">📧 {item.email}</p>
-            <p className="my-2 text-gray-700 whitespace-pre-line">
-              {item.message}
+            <p className="text-gray-700">
+              {item.message} {item.overlay && <span className="ml-1">{item.overlay}</span>}
             </p>
             <p className="text-xs text-gray-400">
               {new Date(item.timestamp).toLocaleString()}

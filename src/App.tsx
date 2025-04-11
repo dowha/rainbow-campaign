@@ -6,7 +6,8 @@ import { useState } from 'react'
 
 export default function App() {
   const [image, setImage] = useState<File | null>(null)
-  const [overlay, setOverlay] = useState<string>('rainbow-flag.png')
+  const [overlayFile, setOverlayFile] = useState('rainbow-flag.png') // 이미지 파일용
+  const [overlayEmoji, setOverlayEmoji] = useState('🌈') // 이모지 저장
 
   return (
     <div className="flex flex-col md:flex-row h-auto md:h-screen font-sans text-sm">
@@ -25,9 +26,12 @@ export default function App() {
           ].map((item) => (
             <button
               key={item.file}
-              onClick={() => setOverlay(item.file)}
+              onClick={() => {
+                setOverlayFile(item.file)
+                setOverlayEmoji(item.emoji)
+              }}
               className={`w-10 h-10 rounded-full border text-xl flex items-center justify-center transition ${
-                overlay === item.file ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'
+                overlayFile === item.file ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'
               }`}
             >
               {item.emoji}
@@ -35,8 +39,8 @@ export default function App() {
           ))}
         </div>
 
-        {image && <CanvasPreview image={image} overlay={overlay} />}
-        <MessageForm />
+        {image && <CanvasPreview image={image} overlay={overlayFile} />}
+        <MessageForm overlay={overlayEmoji} />
       </div>
 
       {/* 오른쪽 메시지 리스트 */}
