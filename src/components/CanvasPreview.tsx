@@ -2,9 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 
 type Props = {
   image: File
+  overlay: string
 }
 
-export default function CanvasPreview({ image }: Props) {
+export default function CanvasPreview({ image, overlay }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
 
@@ -15,7 +16,7 @@ export default function CanvasPreview({ image }: Props) {
     if (!ctx) return
 
     const baseImage = new Image()
-    const overlay = new Image()
+    const overlayImg = new Image()
 
     baseImage.onload = () => {
       const size = 320
@@ -30,21 +31,21 @@ export default function CanvasPreview({ image }: Props) {
       const y = (size - h) / 2
       ctx.drawImage(baseImage, x, y, w, h)
 
-      overlay.onload = () => {
+      overlayImg.onload = () => {
         const badgeSize = size / 3
-        ctx.drawImage(overlay, size - badgeSize - 12, 12, badgeSize, badgeSize)
+        ctx.drawImage(overlayImg, size - badgeSize - 12, 12, badgeSize, badgeSize)
         setDownloadUrl(canvas.toDataURL('image/png'))
       }
 
-      overlay.onerror = () => {
+      overlayImg.onerror = () => {
         console.error('❌ overlay image failed to load')
       }
 
-      overlay.src = import.meta.env.BASE_URL + 'rainbow-flag.png'
+      overlayImg.src = import.meta.env.BASE_URL + overlay
     }
 
     baseImage.src = URL.createObjectURL(image)
-  }, [image])
+  }, [image, overlay])
 
   return (
     <div className="mt-6 text-center">

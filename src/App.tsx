@@ -6,6 +6,7 @@ import { useState } from 'react'
 
 export default function App() {
   const [image, setImage] = useState<File | null>(null)
+  const [overlay, setOverlay] = useState<string>('rainbow-flag.png')
 
   return (
     <div className="flex flex-col md:flex-row h-auto md:h-screen font-sans text-sm">
@@ -13,7 +14,28 @@ export default function App() {
       <div className="w-full md:w-[360px] p-4 border-b md:border-b-0 md:border-r border-gray-200 flex flex-col gap-4">
         <h1 className="text-lg font-semibold leading-6">캠페인 참여</h1>
         <Uploader onSelect={setImage} />
-        {image && <CanvasPreview image={image} />}
+
+        {/* 이모지 선택 버튼 */}
+        <div className="flex justify-center gap-3 my-2">
+          {[ 
+            { emoji: '🌈', file: 'rainbow-flag.png' },
+            { emoji: '⭐', file: 'star.png' },
+            { emoji: '❤️', file: 'heart.png' },
+            { emoji: '💪', file: 'support.png' },
+          ].map((item) => (
+            <button
+              key={item.file}
+              onClick={() => setOverlay(item.file)}
+              className={`w-10 h-10 rounded-full border text-xl flex items-center justify-center transition ${
+                overlay === item.file ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300'
+              }`}
+            >
+              {item.emoji}
+            </button>
+          ))}
+        </div>
+
+        {image && <CanvasPreview image={image} overlay={overlay} />}
         <MessageForm />
       </div>
 
