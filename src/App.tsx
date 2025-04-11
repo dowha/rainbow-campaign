@@ -1,13 +1,17 @@
+import { useState } from 'react'
 import Uploader from './components/Uploader'
 import CanvasPreview from './components/CanvasPreview'
 import MessageForm from './components/MessageForm'
 import MessageList from './components/MessageList'
-import { useState } from 'react'
+
+const positions = ['top-left', 'top-right', 'bottom-right'] as const
+type OverlayPosition = typeof positions[number]
 
 export default function App() {
   const [image, setImage] = useState<File | null>(null)
-  const [overlayFile, setOverlayFile] = useState('rainbow-flag.png') // 이미지 파일용
-  const [overlayEmoji, setOverlayEmoji] = useState('🌈') // 이모지 저장
+  const [overlayFile, setOverlayFile] = useState('rainbow-flag.png')
+  const [overlayEmoji, setOverlayEmoji] = useState('🌈')
+  const [overlayPosition, setOverlayPosition] = useState<OverlayPosition>('top-right')
 
   return (
     <div className="flex flex-col md:flex-row h-auto md:h-screen font-sans text-sm">
@@ -16,9 +20,9 @@ export default function App() {
         <h1 className="text-lg font-semibold leading-6">캠페인 참여</h1>
         <Uploader onSelect={setImage} />
 
-        {/* 이모지 선택 버튼 */}
+        {/* 이모지 선택 */}
         <div className="flex justify-center gap-3 my-2">
-          {[ 
+          {[
             { emoji: '🌈', file: 'rainbow-flag.png' },
             { emoji: '⭐', file: 'star.png' },
             { emoji: '❤️', file: 'heart.png' },
@@ -39,7 +43,29 @@ export default function App() {
           ))}
         </div>
 
-        {image && <CanvasPreview image={image} overlay={overlayFile} />}
+        {/* 오버레이 위치 선택 */}
+        <div className="flex justify-center gap-2 text-sm">
+          {positions.map((pos) => (
+            <label key={pos} className="flex items-center gap-1">
+              <input
+                type="radio"
+                name="position"
+                value={pos}
+                checked={overlayPosition === pos}
+                onChange={() => setOverlayPosition(pos)}
+              />
+              {pos.replace('-', ' ')}
+            </label>
+          ))}
+        </div>
+
+        {image && (
+          <CanvasPreview
+            image={image}
+            overlay={overlayFile}
+            position={overlayPosition}
+          />
+        )}
         <MessageForm overlay={overlayEmoji} />
       </div>
 
