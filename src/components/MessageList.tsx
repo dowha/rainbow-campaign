@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
 
+function maskEmail(email: string): string {
+  const [user, domain] = email.split('@')
+  if (user.length <= 2) return '*@' + domain
+  return user.slice(0, 2) + '***@' + domain
+}
+
 type Message = {
   email: string
   message: string
@@ -40,7 +46,7 @@ export default function MessageList() {
               </div>
             )}
             <div className="flex-1">
-              <p className="font-medium text-gray-800">📧 {item.email}</p>
+              <p className="font-medium text-gray-800">📧 {maskEmail(item.email)}</p>
               <p className="text-gray-700 whitespace-pre-line">{item.message}</p>
               <p className="text-xs text-gray-400">
                 {new Date(item.timestamp).toLocaleString()}
