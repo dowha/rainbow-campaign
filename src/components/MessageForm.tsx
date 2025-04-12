@@ -45,7 +45,9 @@ export default function MessageForm({ overlay }: Props) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">이메일</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          이메일
+        </label>
         <input
           type="email"
           value={email}
@@ -55,10 +57,17 @@ export default function MessageForm({ overlay }: Props) {
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">지지 메시지</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          지지 메시지{' '}
+          <span className="text-sm text-gray-400 text-right">
+          {'('}{message.length} / 300자{')'}
+          </span>
+        </label>
+
         <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          maxLength={300}
           required
           rows={4}
           className="w-full border border-gray-300 rounded px-3 py-2 text-sm shadow-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -68,7 +77,9 @@ export default function MessageForm({ overlay }: Props) {
         type="submit"
         disabled={isSubmitting}
         className={`w-full text-white text-sm font-medium py-2 px-4 rounded ${
-          isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+          isSubmitting
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-blue-600 hover:bg-blue-700'
         }`}
       >
         {isSubmitting ? '제출 중...' : '제출'}

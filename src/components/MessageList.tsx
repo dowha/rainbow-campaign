@@ -36,22 +36,33 @@ export default function MessageList() {
         {messages.map((item, idx) => (
           <div
             key={idx}
-            className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-3"
+            className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex flex-col justify-between h-full gap-3
+            transition-all duration-200 transform hover:scale-[1.015]
+            hover:bg-[linear-gradient(135deg,rgba(255,0,0,0.06),rgba(255,165,0,0.06),rgba(255,255,0,0.06),rgba(0,128,0,0.06),rgba(0,0,255,0.06),rgba(75,0,130,0.06))]"
           >
-            {item.overlay && (
-              <div className={`text-xl w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full ${
-                emojiBgMap[item.overlay] || 'bg-gray-100'
-              }`}>
-                {item.overlay}
+            <div className="flex items-start gap-3">
+              {item.overlay && (
+                <div
+                  className={`text-xl w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-full ${
+                    emojiBgMap[item.overlay] || 'bg-gray-100'
+                  }`}
+                >
+                  {item.overlay}
+                </div>
+              )}
+              <div className="flex-1">
+                <p className="font-medium text-gray-800">
+                  📧 {maskEmail(item.email)}
+                </p>
+                <p className="text-gray-700 whitespace-pre-line">
+                  {item.message}
+                </p>
               </div>
-            )}
-            <div className="flex-1">
-              <p className="font-medium text-gray-800">📧 {maskEmail(item.email)}</p>
-              <p className="text-gray-700 whitespace-pre-line">{item.message}</p>
-              <p className="text-xs text-gray-400">
-                {new Date(item.timestamp).toLocaleString()}
-              </p>
             </div>
+
+            <p className="text-xs text-gray-400 text-right mt-2">
+              {new Date(item.timestamp).toLocaleString()}
+            </p>
           </div>
         ))}
       </div>
