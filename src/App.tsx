@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Uploader from './components/Uploader'
 import CanvasPreview from './components/CanvasPreview'
 import MessageForm from './components/MessageForm'
@@ -12,13 +12,35 @@ export default function App() {
   const [overlayEmoji, setOverlayEmoji] = useState('🌈')
   const [overlayPosition, setOverlayPosition] =
     useState<OverlayPosition>('top-right')
+  const [isSticky, setIsSticky] = useState(false)
+
+  const sentinelRef = useRef<HTMLDivElement | null>(null)
+
+  // 💡 모바일에서 왼쪽 영역 지나가면 메시지 제목 sticky 처리
+  useEffect(() => {
+    const sentinel = sentinelRef.current
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsSticky(!entry.isIntersecting),
+      { threshold: 0 }
+    )
+
+    if (sentinel) observer.observe(sentinel)
+
+    return () => {
+      if (sentinel) observer.unobserve(sentinel)
+    }
+  }, [])
 
   return (
-    <div className="flex flex-col md:flex-row h-screen font-sans text-sm overflow-hidden">
+    <div className="flex flex-col md:flex-row font-sans text-sm min-h-screen md:h-screen">
       {/* 왼쪽 고정 영역 */}
-      <div className="w-full md:w-[360px] p-4 pt-6 border-b md:border-b-0 md:border-r border-gray-200 flex flex-col gap-4 overflow-y-auto">
-        <h1 className="text-lg font-semibold leading-6 text-center">🌈 캠페인 참여하기</h1>
+      <div className="w-full md:w-[360px] p-6 border-b md:border-b-0 md:border-r border-gray-200 flex flex-col gap-4 md:h-screen overflow-y-auto">
+        <h1 className="text-lg font-semibold leading-6 text-center">
+          🌈 캠페인 참여하기
+        </h1>
+
         <Uploader onSelect={setImage} />
+
         {/* 이모지 선택 */}
         <div className="flex justify-center gap-3 my-2">
           {[
@@ -43,6 +65,7 @@ export default function App() {
             </button>
           ))}
         </div>
+
         {image && (
           <CanvasPreview
             image={image}
@@ -51,11 +74,20 @@ export default function App() {
             setPosition={setOverlayPosition}
           />
         )}
+
         <MessageForm overlay={overlayEmoji} />
+
+        {/* 👉 모바일 기준점 (스크롤 감지용) */}
+        <div ref={sentinelRef} className="h-1" />
       </div>
+
       {/* 오른쪽 메시지 리스트 */}
       <div className="w-full flex-1 p-4 md:p-6 bg-gray-50 overflow-y-auto">
-        <h2 className="text-lg font-semibold leading-6 mb-4 text-center">
+        <h2
+          className={`text-lg font-semibold leading-6 mb-4 text-center transition-all ${
+            isSticky ? 'sticky top-0 bg-gray-50 z-10' : ''
+          }`}
+        >
           💌 남겨진 응원 메시지
         </h2>
         <MessageList />
